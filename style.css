@@ -1,0 +1,94 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+h1, h2, h3, p{
+    color: white;
+}
+
+body {
+    background: rgb(76,0,255);
+    background: linear-gradient(150deg, rgba(76,0,255,1) 16%, rgba(75,255,38,1) 71%); 
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.profiles {
+    display: flex;
+    gap: 50px;
+}
+
+.profiles img {
+    width: 200px;
+    height: 300px;
+}
+
+.actor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game form {
+    width: 100%;
+}
+
+.game input {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.btns {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.btns button {
+    width: 50%;
+    border-radius: 15px;
+    border: none;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#submit {
+    background-color: green;
+}
+
+#next {
+    background-color: purple;
+}
+
+.game button:hover {
+    cursor: pointer;
+}

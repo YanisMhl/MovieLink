@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>MovieLink</title>
+</head>
+<body>
+    <main>
+        <div class="title">
+            <h1>Movie Link</h1>
+            <h2>Devinez l'acteur !</h2>
+        </div>
+        <div class="game">
+            <h2>Quel acteur a déjà joué avec..</h2>
+            <div class="profiles">
+                <div class="actor">
+                    <img id="first-actor-image" class="actor-image">
+                    <h3 id="first-actor-name"></h3>
+                </div>
+                <div class="actor">
+                    <img id="second-actor-image" class="actor-image" src="anonymous.jpg">
+                    <h3 id="second-actor-name">?</h3>
+                </div>
+            </div>
+            <p id="result"></p>
+            <form>
+                <input type="text" id="user-input" placeholder="nom d'un acteur.."/>
+            </form>
+            <div class="btns">
+                <button id="submit">submit</button>
+                <button id="next">next</button>
+            </div>
+            <p id="score">Score : 0</p>
+        </div>
+    </main>
+    <script type="module" src="./app.js"></script>
+</body>
+</html>
