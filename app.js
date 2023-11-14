@@ -26,12 +26,12 @@ async function fetchActorData()
     return data;
 }
 
-async function fetchActorImage(actorId, imageElement)
+async function fetchActorImage(actorId)
 {
     const response = await fetch(`https://api.themoviedb.org/3/person/${actorId}/images`, options);
     const data = await response.json();
     const imageUrl = data.profiles[0].file_path;
-    imageElement.src = `https://image.tmdb.org/t/p/original${imageUrl}`;
+    return `https://image.tmdb.org/t/p/original${imageUrl}`;
 }
 
 async function getCredits(actorId) 
@@ -56,6 +56,7 @@ async function findCommonMovies(actor1, actor2)
     return commonFilms.map(credit => credit.title);
 }
 
+//Vérifier les films en commun entre les deux acteurs
 async function checkCommonMovies(randomActor, userActor)
 {
 
@@ -68,15 +69,53 @@ function updateResultAndScore(message, films, scoreElement, score)
 }
 
 //Afficher les informations de l'acteur dans l'élément spécifié
-function displayActorInfo(element, name, imageUrl)
+async function displayActorInfo(actor_element, actor_image, name, id)
 {
-
+    actor_element.innerHTML = name;
+    actor_image.src = await fetchActorImage(id);
 }
 
 //Gérer la soumission de la supposition de l'utilisateur ici
-async function handleGuessActor()
+async function handleGuessActor(actor_data, actor)
 {
-
+    submitButton.removeEventListener("click", handleGuessActor);
+    let userId;
+    let userActor = userInput.value.toLowerCase();
+    actor_data.forEach(element => {
+        if (element.name === userActor)
+            userId = element.id;
+    });
+    if (!userId)
+    {
+        result.innerHTML = "Désolé nous n'avons pas trouvé cet acteur dans notre base de données";
+        score = 0;
+        popularity_threshold = 90;
+        nextBtn.innerHTML = "Retry";
+        nextBtn.addEventListener("click", initializeGame);
+    }
+    else 
+    {
+        let films = await findCommonMovies(actor.id, userId);
+        if (films.length === 0)
+        {
+            result.innerHTML = `Désolé ${actor.name} et ${userActor} n'ont jamais joué ensemble`;
+            score = 0;
+            popularity_threshold = 90;
+            nextBtn.innerHTML = "Retry";
+            nextBtn.addEventListener("click", initializeGame);
+        }
+        else 
+        {
+            result.innerHTML = `Tout à fait !\nVoilà la liste des films en commun qu'ont ces acteurs :\n${films}`;
+            score++;
+            popularity_threshold -= 2;
+            scoreElement.innerHTML = score;
+            userInput.value = "";
+            await displayActorInfo(userElement, userImage, userActor, userId);
+            nextBtn.innerHTML = "next";
+            nextBtn.addEventListener("click", initializeGame);
+        }
+    }
 }
 
 //Gérer le clic sur le bouton suivant 
@@ -87,5 +126,18 @@ async function handleNextActor()
 
 async function initializeGame()
 {
-
+    scoreElement.innerHTML = score;
+    userInput.value = "";
+    userImage.src = "anonymous.jpg";
+    userElement.innerHTML = "?";
+    result.innerHTML = "";
+    nextBtn.innerHTML = "Retry";
+    let actorData = await fetchActorData();
+    let randomActor = actorData[Math.floor(Math.random() * actorData.length)];
+    while (randomActor.popularity < popularity_threshold)
+        randomActor = actorData[Math.floor(Math.random() * actorData.length)];
+    await displayActorInfo(actorElement, actorImage, randomActor.name, randomActor.id);
+    submitButton.addEventListener("click", () => handleGuessActor(actorData, randomActor));
 }
+
+initializeGame();
