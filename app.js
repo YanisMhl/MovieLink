@@ -88,7 +88,7 @@ async function handleGuessActor()
     let userId;
     let userActor = userInput.value.toLowerCase();
     actorData.forEach(element => {
-        if (element.name === userActor && userActor !== actor.name)
+        if (element.name === userActor)
             userId = element.id;
     });
     if (!userId)
