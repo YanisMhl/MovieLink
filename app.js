@@ -17,6 +17,8 @@ let result = document.getElementById("result");
 let nextBtn = document.getElementById("next");
 let scoreElement = document.getElementById("score");
 
+let actor;
+let actorData;
 
 //Functions
 async function fetchActorData()
@@ -76,12 +78,12 @@ async function displayActorInfo(actor_element, actor_image, name, id)
 }
 
 //Gérer la soumission de la supposition de l'utilisateur ici
-async function handleGuessActor(actor_data, actor)
+async function handleGuessActor()
 {
     console.log("je suis lancé");
     let userId;
     let userActor = userInput.value.toLowerCase();
-    actor_data.forEach(element => {
+    actorData.forEach(element => {
         if (element.name === userActor)
             userId = element.id;
     });
@@ -89,11 +91,10 @@ async function handleGuessActor(actor_data, actor)
     {
         result.innerHTML = "Désolé nous n'avons pas trouvé cet acteur dans notre base de données";
         score = 0;
+        scoreElement.innerHTML = score;
         popularity_threshold = 90;
         userInput.value = "";
         nextBtn.innerHTML = "Retry";
-        // nextBtn.removeEventListener("click", initializeGame);
-        // nextBtn.addEventListener("click", initializeGame);
     }
     else 
     {
@@ -102,10 +103,10 @@ async function handleGuessActor(actor_data, actor)
         {
             result.innerHTML = `Désolé ${actor.name} et ${userActor} n'ont jamais joué ensemble`;
             score = 0;
+            scoreElement.innerHTML = score;
             popularity_threshold = 90;
             userInput.value = "";
             nextBtn.innerHTML = "Retry";
-            // nextBtn.addEventListener("click", initializeGame);
         }
         else 
         {
@@ -116,11 +117,24 @@ async function handleGuessActor(actor_data, actor)
             userInput.value = "";
             await displayActorInfo(userElement, userImage, userActor, userId);
             nextBtn.innerHTML = "next";
-            // nextBtn.addEventListener("click", initializeGame);
         }
     }
 }
 
+async function restart()
+{
+    scoreElement.innerHTML = score;
+    userInput.value = "";
+    userImage.src = "anonymous.jpg";
+    userElement.innerHTML = "?";
+    result.innerHTML = "";
+    nextBtn.innerHTML = "Retry";
+    actorData = await fetchActorData();
+    actor = actorData[Math.floor(Math.random() * actorData.length)];
+    while (actor.popularity < popularity_threshold)
+        actor = actorData[Math.floor(Math.random() * actorData.length)];
+    await displayActorInfo(actorElement, actorImage, actor.name, actor.id);
+}
 
 async function initializeGame()
 {
@@ -130,13 +144,13 @@ async function initializeGame()
     userElement.innerHTML = "?";
     result.innerHTML = "";
     nextBtn.innerHTML = "Retry";
-    let actorData = await fetchActorData();
-    let randomActor = actorData[Math.floor(Math.random() * actorData.length)];
-    while (randomActor.popularity < popularity_threshold)
-        randomActor = actorData[Math.floor(Math.random() * actorData.length)];
-    await displayActorInfo(actorElement, actorImage, randomActor.name, randomActor.id);
-    submitButton.addEventListener("click", () => handleGuessActor(actorData, randomActor));
-    nextBtn.addEventListener("click", initializeGame);
+    actorData = await fetchActorData();
+    actor = actorData[Math.floor(Math.random() * actorData.length)];
+    while (actor.popularity < popularity_threshold)
+        actor = actorData[Math.floor(Math.random() * actorData.length)];
+    await displayActorInfo(actorElement, actorImage, actor.name, actor.id);
+    submitButton.addEventListener("click", () => handleGuessActor());
+    nextBtn.addEventListener("click", restart);
 }
 
 initializeGame();
