@@ -78,7 +78,7 @@ async function displayActorInfo(actor_element, actor_image, name, id)
 //Gérer la soumission de la supposition de l'utilisateur ici
 async function handleGuessActor(actor_data, actor)
 {
-    submitButton.removeEventListener("click", handleGuessActor);
+    console.log("je suis lancé");
     let userId;
     let userActor = userInput.value.toLowerCase();
     actor_data.forEach(element => {
@@ -90,8 +90,10 @@ async function handleGuessActor(actor_data, actor)
         result.innerHTML = "Désolé nous n'avons pas trouvé cet acteur dans notre base de données";
         score = 0;
         popularity_threshold = 90;
+        userInput.value = "";
         nextBtn.innerHTML = "Retry";
-        nextBtn.addEventListener("click", initializeGame);
+        // nextBtn.removeEventListener("click", initializeGame);
+        // nextBtn.addEventListener("click", initializeGame);
     }
     else 
     {
@@ -101,8 +103,9 @@ async function handleGuessActor(actor_data, actor)
             result.innerHTML = `Désolé ${actor.name} et ${userActor} n'ont jamais joué ensemble`;
             score = 0;
             popularity_threshold = 90;
+            userInput.value = "";
             nextBtn.innerHTML = "Retry";
-            nextBtn.addEventListener("click", initializeGame);
+            // nextBtn.addEventListener("click", initializeGame);
         }
         else 
         {
@@ -113,16 +116,11 @@ async function handleGuessActor(actor_data, actor)
             userInput.value = "";
             await displayActorInfo(userElement, userImage, userActor, userId);
             nextBtn.innerHTML = "next";
-            nextBtn.addEventListener("click", initializeGame);
+            // nextBtn.addEventListener("click", initializeGame);
         }
     }
 }
 
-//Gérer le clic sur le bouton suivant 
-async function handleNextActor()
-{
-
-}
 
 async function initializeGame()
 {
@@ -138,6 +136,7 @@ async function initializeGame()
         randomActor = actorData[Math.floor(Math.random() * actorData.length)];
     await displayActorInfo(actorElement, actorImage, randomActor.name, randomActor.id);
     submitButton.addEventListener("click", () => handleGuessActor(actorData, randomActor));
+    nextBtn.addEventListener("click", initializeGame);
 }
 
 initializeGame();
