@@ -19,6 +19,7 @@ let scoreElement = document.getElementById("score");
 
 let actor;
 let actorData;
+let gameLocked = false;
 
 //Functions
 async function fetchActorData()
@@ -80,6 +81,9 @@ async function displayActorInfo(actor_element, actor_image, name, id)
 //Gérer la soumission de la supposition de l'utilisateur ici
 async function handleGuessActor()
 {
+    if (gameLocked)
+        return ;
+    gameLocked = true;
     console.log("je suis lancé");
     let userId;
     let userActor = userInput.value.toLowerCase();
@@ -123,6 +127,7 @@ async function handleGuessActor()
 
 async function restart()
 {
+    gameLocked = false;
     scoreElement.innerHTML = score;
     userInput.value = "";
     userImage.src = "anonymous.jpg";
